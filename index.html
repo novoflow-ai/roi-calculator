@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Frame-Options" content="ALLOWALL">
+    <title>ROI Calculator - Novoflow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Lead Capture Form */
+        .lead-capture {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 48px;
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+            border: 1px solid #e8e8e8;
+        }
+
+        .lead-capture h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .lead-capture p {
+            color: #666;
+            margin-bottom: 32px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .submit-btn {
+            background-color: #7c3aed;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #6d28d9;
+            transform: translateY(-1px);
+        }
+
+        /* Calculator */
+        .calculator {
+            display: none;
+        }
+
+        .calculator-header {
+            background-color: #7c3aed;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 500;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .calculator-header::before {
+            content: "🩺";
+            font-size: 24px;
+        }
+
+        .calculator-wrapper {
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .calculator-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            background: white;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section {
+            padding: 32px;
+            border-right: 1px solid #f0f0f0;
+        }
+
+        .results-section {
+            padding: 32px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #1a1a1a;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .input-suffix {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-suffix input {
+            width: 80px;
+            text-align: right;
+        }
+
+        .input-suffix span {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .toggle-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .toggle-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding: 4px 0;
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e0e0e0;
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #7c3aed;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Results Table */
+        .results-table {
+            margin-top: 20px;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f8f8f8;
+            font-size: 14px;
+            align-items: center;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-name {
+            color: #666;
+        }
+
+        .metric-indent {
+            padding-left: 24px;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .metric-value {
+            text-align: center;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .metric-change {
+            color: #7c3aed;
+            font-weight: 600;
+        }
+
+        .expand-arrow {
+            display: inline-block;
+            margin: 0 4px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Revenue Section */
+        .revenue-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .subsection-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 20px 0 12px 0;
+        }
+
+        .total-row {
+            font-weight: 700;
+            background-color: #f8f8fa;
+            margin: 8px 0;
+            padding: 14px 0;
+            border-radius: 8px;
+        }
+
+        /* Savings Display */
+        .savings-display {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            margin-top: 40px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .savings-label {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .savings-amount {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Lead Capture Form -->
+        <div class="lead-capture" id="leadCapture">
+            <h1>Calculate Your ROI</h1>
+            <p>See how much revenue your clinic can recover with Novoflow in just 30 seconds</p>
+            <form id="leadForm">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Enter your email address" required>
+                </div>
+                <button type="submit" class="submit-btn">Calculate My Savings →</button>
+            </form>
+        </div>
+
+        <!-- Calculator -->
+        <div class="calculator" id="calculator">
+            <div class="calculator-wrapper">
+                <div class="calculator-header">
+                    ROI Calculator
+                    <span style="margin-left: auto; font-size: 14px; opacity: 0.9;">Estimate your recovered revenue in under 30 seconds</span>
+                </div>
+
+                <div class="calculator-content">
+                    <!-- Left Column - Inputs -->
+                    <div class="input-section">
+                        <h2 class="section-title">Tell Us About Your Clinic</h2>
+                        
+                        <div class="input-group">
+                            <label>Active patients</label>
+                            <input type="number" id="activePatients" value="250" min="0">
+                        </div>
+
+                        <div class="input-group">
+                            <label>No show rate</label>
+                            <div class="input-suffix">
+                                <input type="number" id="noShowRate" value="10" min="0" max="100">
+                                <span>%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Cancellation rate</label>
+                            <div class="input-suffix">
+                                <input type="number" id="cancellationRate" value="20" min="0" max="100">
+                                <span>%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Average revenue per visit</label>
+                            <div class="input-suffix">
+                                <span>$</span>
+                                <input type="number" id="avgRevenue" value="90" min="0">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Monthly salary per front office employee</label>
+                            <div class="input-suffix">
+                                <span>$</span>
+                                <input type="number" id="monthlySalary" value="3000" min="0">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Number of front office employees</label>
+                            <input type="number" id="numEmployees" value="3" min="0">
+                        </div>
+
+                        <div class="toggle-section">
+                            <h3>Novoflow features</h3>
+                            
+                            <div class="toggle-item">
+                                <label class="toggle-label">Automated reminders</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="automatedReminders" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="toggle-item">
+                                <label class="toggle-label">Automated waitlist</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="automatedWaitlist" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="toggle-item">
+                                <label class="toggle-label">Automated rescheduling</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="automatedRescheduling" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="toggle-item">
+                                <label class="toggle-label">Automated no-show fee collection</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="noShowFeeCollection" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Results -->
+                    <div class="results-section">
+                        <h2 class="section-title">Results Comparison</h2>
+                        
+                        <div class="results-table">
+                            <div class="table-header">
+                                <div>Impacted metric</div>
+                                <div style="text-align: center;">Without Novoflow</div>
+                                <div style="text-align: center;">With Novoflow</div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name">Active patients</div>
+                                <div class="metric-value" id="activePatientsCurrent">250</div>
+                                <div class="metric-value" id="activePatientsWith">250</div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name">Cancellation rate</div>
+                                <div class="metric-value" id="cancellationRateCurrent">20%</div>
+                                <div class="metric-value" id="cancellationRateWith">9%</div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name metric-indent">
+                                    Automated reminders <span class="expand-arrow">↓</span> <span class="metric-change">-35%</span>
+                                </div>
+                                <div class="metric-value"></div>
+                                <div class="metric-value"></div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name metric-indent">
+                                    Automated rescheduling <span class="expand-arrow">↓</span> <span class="metric-change">-20%</span>
+                                </div>
+                                <div class="metric-value"></div>
+                                <div class="metric-value"></div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name">No-show rate</div>
+                                <div class="metric-value" id="noShowRateCurrent">10%</div>
+                                <div class="metric-value" id="noShowRateWith">4%</div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name metric-indent">
+                                    Automated reminders <span class="expand-arrow">↓</span> <span class="metric-change">-40%</span>
+                                </div>
+                                <div class="metric-value"></div>
+                                <div class="metric-value"></div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name">Cancellation backfill rate</div>
+                                <div class="metric-value">10%</div>
+                                <div class="metric-value" id="backfillRateWith">15%</div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name metric-indent">
+                                    Automated waitlist <span class="expand-arrow">→</span> <span class="metric-change">50%</span>
+                                </div>
+                                <div class="metric-value"></div>
+                                <div class="metric-value"></div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name">No-show fee collection rate</div>
+                                <div class="metric-value">30%</div>
+                                <div class="metric-value" id="noShowFeeRateWith">90%</div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name metric-indent">
+                                    Automated no-show fee collection <span class="expand-arrow">→</span> <span class="metric-change">200%</span>
+                                </div>
+                                <div class="metric-value"></div>
+                                <div class="metric-value"></div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name">Front office staff</div>
+                                <div class="metric-value" id="staffCurrent">3</div>
+                                <div class="metric-value" id="staffWith">2</div>
+                            </div>
+                        </div>
+
+                        <div class="revenue-section">
+                            <div class="subsection-title">Addressable revenue items</div>
+                            
+                            <div class="table-row">
+                                <div class="metric-name">Visits scheduled</div>
+                                <div class="metric-value" id="visitsScheduledCurrent">1000</div>
+                                <div class="metric-value" id="visitsScheduledWith">1540</div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name">Visits occurred</div>
+                                <div class="metric-value" id="visitsOccurredCurrent">736</div>
+                                <div class="metric-value" id="visitsOccurredWith">1365</div>
+                            </div>
+
+                            <div class="subsection-title">Addressable revenue</div>
+
+                            <div class="table-row">
+                                <div class="metric-name">Visits occurred</div>
+                                <div class="metric-value" id="revenueVisitsCurrent">$66,240</div>
+                                <div class="metric-value" id="revenueVisitsWith">$122,850</div>
+                            </div>
+
+                            <div class="table-row">
+                                <div class="metric-name">No-show fees collected</div>
+                                <div class="metric-value" id="noShowFeesCurrent">$3,000</div>
+                                <div class="metric-value" id="noShowFeesWith">$5,544</div>
+                            </div>
+
+                            <div class="table-row total-row">
+                                <div class="metric-name">Total</div>
+                                <div class="metric-value" id="totalRevenueCurrent">$69,240</div>
+                                <div class="metric-value" id="totalRevenueWith">$128,394</div>
+                            </div>
+
+                            <div class="subsection-title">Addressable costs</div>
+
+                            <div class="table-row">
+                                <div class="metric-name">Front office staff expense</div>
+                                <div class="metric-value" id="staffCostCurrent">$9,000</div>
+                                <div class="metric-value" id="staffCostWith">$6,000</div>
+                            </div>
+
+                            <div class="table-row total-row">
+                                <div class="metric-name">Total</div>
+                                <div class="metric-value" id="totalCostCurrent">$9,000</div>
+                                <div class="metric-value" id="totalCostWith">$6,000</div>
+                            </div>
+
+                            <div class="subsection-title">Difference</div>
+
+                            <div class="table-row">
+                                <div class="metric-name">Associated revenue minus costs</div>
+                                <div class="metric-value" id="netCurrent">$60,240</div>
+                                <div class="metric-value" id="netWith">$122,394</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="savings-display">
+                <div class="savings-label">Savings per month</div>
+                <div class="savings-amount" id="totalSavings">$62,154</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lead form submission
+        document.getElementById('leadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            
+            // Log email (in production, send to your backend)
+            console.log('Email captured:', email);
+            
+            // Show calculator
+            document.getElementById('leadCapture').style.display = 'none';
+            document.getElementById('calculator').style.display = 'block';
+            
+            // Calculate initial results
+            calculateROI();
+        });
+
+        // Add event listeners to inputs
+        const inputs = document.querySelectorAll('input[type="number"]');
+        const toggles = document.querySelectorAll('input[type="checkbox"]');
+
+        inputs.forEach(input => {
+            input.addEventListener('input', calculateROI);
+        });
+
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', calculateROI);
+        });
+
+        function calculateROI() {
+            // Get input values
+            const activePatients = parseFloat(document.getElementById('activePatients').value) || 0;
+            const noShowRate = parseFloat(document.getElementById('noShowRate').value) / 100 || 0;
+            const cancellationRate = parseFloat(document.getElementById('cancellationRate').value) / 100 || 0;
+            const avgRevenue = parseFloat(document.getElementById('avgRevenue').value) || 0;
+            const monthlySalary = parseFloat(document.getElementById('monthlySalary').value) || 0;
+            const numEmployees = parseFloat(document.getElementById('numEmployees').value) || 0;
+
+            // Feature toggles
+            const hasReminders = document.getElementById('automatedReminders').checked;
+            const hasWaitlist = document.getElementById('automatedWaitlist').checked;
+            const hasRescheduling = document.getElementById('automatedRescheduling').checked;
+            const hasNoShowCollection = document.getElementById('noShowFeeCollection').checked;
+
+            // Constants
+            const avgVisitsPerPatient = 10;
+            const noShowFee = 100;
+            const baseBackfillRate = 0.1;
+
+            // Calculate current state
+            const monthlyVisitsScheduled = activePatients * avgVisitsPerPatient / 12;
+            const currentCancellations = monthlyVisitsScheduled * cancellationRate;
+            const currentNoShows = (monthlyVisitsScheduled - currentCancellations) * noShowRate;
+            const currentVisitsOccurred = monthlyVisitsScheduled - currentCancellations - currentNoShows + (currentCancellations * baseBackfillRate);
+
+            // Calculate with Novoflow
+            let improvedCancellationRate = cancellationRate;
+            let improvedNoShowRate = noShowRate;
+            let improvedBackfillRate = baseBackfillRate;
+            let noShowFeeCollectionRate = 0.3;
+
+            if (hasReminders) {
+                improvedCancellationRate *= 0.65; // -35%
+                improvedNoShowRate *= 0.6; // -40%
+            }
+
+            if (hasRescheduling) {
+                improvedCancellationRate *= 0.8; // -20%
+            }
+
+            if (hasWaitlist) {
+                improvedBackfillRate = baseBackfillRate + 0.05; // +50% (5% absolute)
+            }
+
+            if (hasNoShowCollection) {
+                noShowFeeCollectionRate = 0.9; // 90%
+            }
+
+            // Additional appointments from better scheduling
+            const improvedVisitsScheduled = monthlyVisitsScheduled * 1.54; // 54% more appointments
+            const improvedCancellations = improvedVisitsScheduled * improvedCancellationRate;
+            const improvedNoShows = (improvedVisitsScheduled - improvedCancellations) * improvedNoShowRate;
+            const improvedVisitsOccurred = improvedVisitsScheduled - improvedCancellations - improvedNoShows + (improvedCancellations * improvedBackfillRate);
+
+            // Calculate revenues
+            const currentVisitRevenue = currentVisitsOccurred * avgRevenue;
+            const currentNoShowFees = currentNoShows * noShowFee * 0.3;
+            const currentTotalRevenue = currentVisitRevenue + currentNoShowFees;
+
+            const improvedVisitRevenue = improvedVisitsOccurred * avgRevenue;
+            const improvedNoShowFees = improvedNoShows * noShowFee * noShowFeeCollectionRate;
+            const improvedTotalRevenue = improvedVisitRevenue + improvedNoShowFees;
+
+            // Calculate costs
+            const currentStaffCost = numEmployees * monthlySalary;
+            const improvedStaffCost = Math.max(1, numEmployees - 1) * monthlySalary;
+
+            // Net calculations
+            const currentNet = currentTotalRevenue - currentStaffCost;
+            const improvedNet = improvedTotalRevenue - improvedStaffCost;
+            const totalSavings = improvedNet - currentNet;
+
+            // Update display - metric values
+            document.getElementById('activePatientsCurrent').textContent = Math.round(activePatients);
+            document.getElementById('activePatientsWith').textContent = Math.round(activePatients);
+            
+            document.getElementById('cancellationRateCurrent').textContent = Math.round(cancellationRate * 100) + '%';
+            document.getElementById('cancellationRateWith').textContent = Math.round(improvedCancellationRate * 100) + '%';
+            
+            document.getElementById('noShowRateCurrent').textContent = Math.round(noShowRate * 100) + '%';
+            document.getElementById('noShowRateWith').textContent = Math.round(improvedNoShowRate * 100) + '%';
+            
+            document.getElementById('backfillRateWith').textContent = Math.round(improvedBackfillRate * 100) + '%';
+            document.getElementById('noShowFeeRateWith').textContent = Math.round(noShowFeeCollectionRate * 100) + '%';
+            
+            document.getElementById('staffCurrent').textContent = numEmployees;
+            document.getElementById('staffWith').textContent = Math.max(1, numEmployees - 1);
+
+            // Update revenue items
+            document.getElementById('visitsScheduledCurrent').textContent = Math.round(monthlyVisitsScheduled);
+            document.getElementById('visitsScheduledWith').textContent = Math.round(improvedVisitsScheduled);
+            
+            document.getElementById('visitsOccurredCurrent').textContent = Math.round(currentVisitsOccurred);
+            document.getElementById('visitsOccurredWith').textContent = Math.round(improvedVisitsOccurred);
+            
+            document.getElementById('revenueVisitsCurrent').textContent = formatCurrency(currentVisitRevenue);
+            document.getElementById('revenueVisitsWith').textContent = formatCurrency(improvedVisitRevenue);
+            
+            document.getElementById('noShowFeesCurrent').textContent = formatCurrency(currentNoShowFees);
+            document.getElementById('noShowFeesWith').textContent = formatCurrency(improvedNoShowFees);
+            
+            document.getElementById('totalRevenueCurrent').textContent = formatCurrency(currentTotalRevenue);
+            document.getElementById('totalRevenueWith').textContent = formatCurrency(improvedTotalRevenue);
+            
+            document.getElementById('staffCostCurrent').textContent = formatCurrency(currentStaffCost);
+            document.getElementById('staffCostWith').textContent = formatCurrency(improvedStaffCost);
+            
+            document.getElementById('totalCostCurrent').textContent = formatCurrency(currentStaffCost);
+            document.getElementById('totalCostWith').textContent = formatCurrency(improvedStaffCost);
+            
+            document.getElementById('netCurrent').textContent = formatCurrency(currentNet);
+            document.getElementById('netWith').textContent = formatCurrency(improvedNet);
+            
+            document.getElementById('totalSavings').textContent = formatCurrency(totalSavings);
+        }
+
+        function formatCurrency(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        // Initial calculation
+        calculateROI();
+    </script>
+</body>
+</html> 
