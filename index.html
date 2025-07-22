@@ -128,21 +128,22 @@
         }
 
         .calculator-header {
-            background: linear-gradient(-90deg, #8733c7, #b969ff 93% 100%);
-            color: white;
-            padding: 16px 24px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f3f0ff 100%);
+            color: #484848;
+            padding: 12px 24px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 18px;
+            gap: 8px;
+            font-size: 14px;
             font-weight: 500;
             border-radius: 16px 16px 0 0;
             font-family: 'Creato Display Medium', sans-serif;
+            border-bottom: 1px solid #e8e8e8;
         }
 
         .calculator-header::before {
-            content: "🩺";
-            font-size: 24px;
+            content: "💰";
+            font-size: 18px;
         }
 
         .calculator-wrapper {
@@ -441,33 +442,46 @@
 
         /* Savings Display - Right Side */
         .savings-section {
-            background: linear-gradient(135deg, #8733c7 0%, #b969ff 100%);
+            background: #ffffff;
+            border-left: 1px solid #f0f0f0;
             padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .savings-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(135, 51, 199, 0.03) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .savings-label {
-            font-size: 16px;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 8px;
+            font-size: 14px;
+            color: #979797;
+            margin-bottom: 12px;
             font-weight: 400;
             font-family: 'Creato Display Regular', sans-serif;
-            letter-spacing: -0.2px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .savings-amount {
-            font-size: 42px;
+            font-size: 48px;
             font-weight: 700;
-            color: #ffffff;
+            color: #8733c7;
             letter-spacing: -2px;
             font-family: 'Creato Display Medium', sans-serif;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 16px;
+            margin-bottom: 8px;
         }
 
         .savings-subtitle {
@@ -510,6 +524,8 @@
             
             .savings-section {
                 border-radius: 0 0 16px 16px;
+                border-left: none;
+                border-top: 1px solid #f0f0f0;
             }
         }
     </style>
@@ -530,11 +546,7 @@
 
         <!-- Calculator -->
         <div class="calculator" id="calculator">
-            <div class="calculator-wrapper">
-                <div class="calculator-header">
-                    ROI Calculator
-                    <span style="margin-left: auto; font-size: 14px; opacity: 0.9;">Estimate your recovered revenue</span>
-                </div>
+            <div class="calculator-wrapper" style="border-top: 3px solid #8B5CF6;">
 
                 <div class="calculator-content">
                     <!-- Left Column - Inputs -->
@@ -719,6 +731,7 @@
 
                     <!-- Right Column - Savings Display -->
                     <div class="savings-section">
+                        <div style="font-size: 32px; margin-bottom: 16px; opacity: 0.1;">📈</div>
                         <div class="savings-label">Additional Monthly Revenue</div>
                         <div class="savings-amount" id="totalSavings">$62,154</div>
                     </div>
