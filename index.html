@@ -5,7 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-Frame-Options" content="ALLOWALL">
     <title>ROI Calculator - Novoflow</title>
+    
+    <!-- Font imports to match website design -->
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
+        /* Custom font faces for Creato Display fonts */
+        @font-face {
+            font-family: 'Creato Display Medium';
+            src: url('https://framerusercontent.com/assets/ATauLcvFKpYgrXGmbBvoKadQKQ.woff2') format('woff2');
+            font-display: swap;
+        }
+        
+        @font-face {
+            font-family: 'Creato Display Regular';
+            src: url('https://framerusercontent.com/assets/BjVITzJzSoiWMhXQ1BhubPVXwm8.woff2') format('woff2');
+            font-display: swap;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,97 +30,114 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Creato Display Regular', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: #ffffff;
-            color: #1a1a1a;
+            color: #484848;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
+            width: 100%;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Lead Capture Form */
         .lead-capture {
             background: #f8f9fa;
             border-radius: 16px;
-            padding: 48px;
+            padding: 32px 48px;
             text-align: center;
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 600px;
+            margin: auto;
             border: 1px solid #e8e8e8;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
         }
 
         .lead-capture h1 {
-            font-size: 32px;
-            margin-bottom: 12px;
-            color: #1a1a1a;
-            font-weight: 600;
+            font-family: 'Creato Display Medium', sans-serif;
+            font-size: 42px;
+            margin-bottom: 8px;
+            color: #484848;
+            font-weight: 500;
+            letter-spacing: -2px;
+            line-height: 1.1;
         }
 
         .lead-capture p {
-            color: #666;
-            margin-bottom: 32px;
+            color: #979797;
+            margin-bottom: 24px;
             font-size: 16px;
+            font-family: 'Creato Display Regular', sans-serif;
+            line-height: 1.4;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 14px 18px;
+            padding: 12px 16px;
             border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 15px;
             transition: all 0.2s;
             background: white;
+            font-family: 'Manrope', sans-serif;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #7c3aed;
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+            border-color: #8733c7;
+            box-shadow: 0 0 0 3px rgba(135, 51, 199, 0.1);
         }
 
         .submit-btn {
-            background-color: #7c3aed;
+            background: radial-gradient(46.045196134530876% 97.08827980363553% at 3.1% 0%, rgb(174, 104, 227) 0%, rgb(135, 51, 199) 100%);
             color: white;
-            border: none;
-            padding: 14px 40px;
-            border-radius: 10px;
+            border: 1px solid rgb(182, 113, 235);
+            padding: 12px 32px;
+            border-radius: 8px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
             width: 100%;
+            font-family: 'Creato Display Medium', sans-serif;
+            letter-spacing: 0px;
         }
 
         .submit-btn:hover {
-            background-color: #6d28d9;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(135, 51, 199, 0.25);
         }
 
-        /* Calculator */
+        /* Calculator - Compact Design */
         .calculator {
             display: none;
+            flex: 1;
+            overflow: hidden;
+            width: 100%;
         }
 
         .calculator-header {
-            background-color: #7c3aed;
+            background: linear-gradient(-90deg, #8733c7, #b969ff 93% 100%);
             color: white;
-            padding: 20px;
-            text-align: center;
+            padding: 16px 24px;
             display: flex;
             align-items: center;
             gap: 12px;
             font-size: 18px;
             font-weight: 500;
-            border-radius: 12px 12px 0 0;
+            border-radius: 16px 16px 0 0;
+            font-family: 'Creato Display Medium', sans-serif;
         }
 
         .calculator-header::before {
@@ -113,113 +147,150 @@
 
         .calculator-wrapper {
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e8e8e8;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
         }
 
         .calculator-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: minmax(280px, 350px) 1fr minmax(260px, 320px);
             gap: 0;
             background: white;
+            flex: 1;
+            overflow: hidden;
+            width: 100%;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1200px) {
             .calculator-content {
-                grid-template-columns: 1fr;
+                grid-template-columns: 260px 1fr 240px;
             }
         }
 
+        /* Compact Input Section */
         .input-section {
-            padding: 32px;
+            padding: 20px;
             border-right: 1px solid #f0f0f0;
-        }
-
-        .results-section {
-            padding: 32px;
+            overflow-y: auto;
+            background: #fafbfc;
         }
 
         .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            color: #1a1a1a;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: #484848;
+            font-family: 'Creato Display Medium', sans-serif;
+            letter-spacing: -0.5px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 0;
+        }
+
+        .input-group.full-width {
+            grid-column: 1 / -1;
         }
 
         .input-group label {
             display: block;
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 8px;
+            font-size: 12px;
+            color: #979797;
+            margin-bottom: 4px;
+            font-family: 'Creato Display Regular', sans-serif;
         }
 
         .input-group input {
             width: 100%;
-            padding: 10px 14px;
+            padding: 8px 12px;
             border: 1px solid #e0e0e0;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 14px;
             background: white;
             transition: all 0.2s;
+            font-family: 'Manrope', sans-serif;
         }
 
         .input-group input:focus {
             outline: none;
-            border-color: #7c3aed;
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+            border-color: #8733c7;
+            box-shadow: 0 0 0 3px rgba(135, 51, 199, 0.1);
         }
 
         .input-suffix {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
         }
 
         .input-suffix input {
-            width: 80px;
+            width: 60px;
             text-align: right;
         }
 
         .input-suffix span {
-            color: #999;
-            font-size: 14px;
+            color: #979797;
+            font-size: 12px;
+            font-family: 'Creato Display Regular', sans-serif;
         }
 
+        /* Compact Toggle Section */
         .toggle-section {
-            margin-top: 32px;
-            padding-top: 24px;
+            margin-top: 16px;
+            padding-top: 16px;
             border-top: 1px solid #f0f0f0;
         }
 
         .toggle-section h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #1a1a1a;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #484848;
+            font-family: 'Creato Display Medium', sans-serif;
+        }
+
+        .toggle-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
 
         .toggle-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
-            padding: 4px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #f0f0f0;
         }
 
         .toggle-label {
-            font-size: 14px;
-            color: #666;
+            font-size: 12px;
+            color: #666666;
+            font-family: 'Creato Display Regular', sans-serif;
+            flex: 1;
+            padding-right: 8px;
         }
 
         .toggle-switch {
             position: relative;
-            width: 48px;
-            height: 26px;
+            width: 36px;
+            height: 20px;
+            flex-shrink: 0;
         }
 
         .toggle-switch input {
@@ -237,55 +308,62 @@
             bottom: 0;
             background-color: #e0e0e0;
             transition: 0.3s;
-            border-radius: 26px;
+            border-radius: 20px;
         }
 
         .toggle-slider:before {
             position: absolute;
             content: "";
-            height: 20px;
-            width: 20px;
-            left: 3px;
-            bottom: 3px;
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
             background-color: white;
             transition: 0.3s;
             border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
         input:checked + .toggle-slider {
-            background-color: #7c3aed;
+            background: linear-gradient(90deg, #8733c7 0%, #b969ff 100%);
         }
 
         input:checked + .toggle-slider:before {
-            transform: translateX(22px);
+            transform: translateX(16px);
         }
 
-        /* Results Table */
+        /* Results Section - Center */
+        .results-section {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Compact Results Table */
         .results-table {
-            margin-top: 20px;
+            margin-top: 0;
         }
 
         .table-header {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
-            gap: 16px;
-            padding: 12px 0;
+            gap: 12px;
+            padding: 10px 0;
             border-bottom: 1px solid #f0f0f0;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 600;
-            color: #999;
+            color: #979797;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-family: 'Creato Display Medium', sans-serif;
         }
 
         .table-row {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
-            gap: 16px;
-            padding: 14px 0;
+            gap: 12px;
+            padding: 10px 0;
             border-bottom: 1px solid #f8f8f8;
-            font-size: 14px;
+            font-size: 13px;
             align-items: center;
         }
 
@@ -294,79 +372,145 @@
         }
 
         .metric-name {
-            color: #666;
+            color: #666666;
+            font-family: 'Creato Display Regular', sans-serif;
+            font-size: 12px;
         }
 
         .metric-indent {
-            padding-left: 24px;
-            color: #999;
-            font-size: 13px;
+            padding-left: 16px;
+            color: #979797;
+            font-size: 11px;
         }
 
         .metric-value {
             text-align: center;
-            color: #1a1a1a;
-            font-weight: 600;
+            color: #484848;
+            font-weight: 500;
+            font-family: 'Creato Display Medium', sans-serif;
+            font-size: 13px;
+        }
+
+        .metric-value.improved {
+            font-weight: 700;
+            color: #8733c7;
+        }
+
+        .metric-value.improved-revenue {
+            font-weight: 700;
+            color: #22c55e;
         }
 
         .metric-change {
-            color: #7c3aed;
+            color: #8733c7;
             font-weight: 600;
+            font-size: 11px;
         }
 
         .expand-arrow {
             display: inline-block;
-            margin: 0 4px;
-            font-size: 12px;
-            color: #999;
+            margin: 0 2px;
+            font-size: 10px;
+            color: #979797;
         }
 
         /* Revenue Section */
         .revenue-section {
-            margin-top: 24px;
-            padding-top: 24px;
+            margin-top: 16px;
+            padding-top: 16px;
             border-top: 1px solid #f0f0f0;
         }
 
         .subsection-title {
-            font-size: 14px;
+            font-size: 11px;
             font-weight: 600;
-            color: #999;
+            color: #979797;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin: 20px 0 12px 0;
+            margin: 12px 0 8px 0;
+            font-family: 'Creato Display Medium', sans-serif;
         }
 
         .total-row {
             font-weight: 700;
-            background-color: #f8f8fa;
-            margin: 8px 0;
-            padding: 14px 0;
-            border-radius: 8px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f3f0ff 100%);
+            margin: 8px -8px;
+            padding: 10px 8px;
+            border-radius: 6px;
         }
 
-        /* Savings Display */
-        .savings-display {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 32px;
+        /* Savings Display - Right Side */
+        .savings-section {
+            background: linear-gradient(135deg, #8733c7 0%, #b969ff 100%);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            margin-top: 40px;
-            border: 1px solid #e8e8e8;
+            color: white;
         }
 
         .savings-label {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 12px;
-            font-weight: 500;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            font-weight: 400;
+            font-family: 'Creato Display Regular', sans-serif;
+            letter-spacing: -0.2px;
         }
 
         .savings-amount {
-            font-size: 48px;
+            font-size: 42px;
             font-weight: 700;
-            color: #1a1a1a;
-            letter-spacing: -1px;
+            color: #ffffff;
+            letter-spacing: -2px;
+            font-family: 'Creato Display Medium', sans-serif;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+        }
+
+        .savings-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            font-family: 'Creato Display Regular', sans-serif;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lead-capture {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .calculator-wrapper {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .calculator-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .savings-section {
+                border-radius: 0 0 16px 16px;
+            }
         }
     </style>
 </head>
@@ -380,7 +524,7 @@
                 <div class="form-group">
                     <input type="email" id="email" placeholder="Enter your email address" required>
                 </div>
-                <button type="submit" class="submit-btn">Calculate My Savings →</button>
+                <button type="submit" class="submit-btn">Calculate Revenue Potential →</button>
             </form>
         </div>
 
@@ -389,127 +533,123 @@
             <div class="calculator-wrapper">
                 <div class="calculator-header">
                     ROI Calculator
-                    <span style="margin-left: auto; font-size: 14px; opacity: 0.9;">Estimate your recovered revenue in under 30 seconds</span>
+                    <span style="margin-left: auto; font-size: 14px; opacity: 0.9;">Estimate your recovered revenue</span>
                 </div>
 
                 <div class="calculator-content">
                     <!-- Left Column - Inputs -->
                     <div class="input-section">
-                        <h2 class="section-title">Tell Us About Your Clinic</h2>
+                        <h2 class="section-title">Clinic Details</h2>
                         
-                        <div class="input-group">
-                            <label>Active patients</label>
-                            <input type="number" id="activePatients" value="250" min="0">
-                        </div>
-
-                        <div class="input-group">
-                            <label>No show rate</label>
-                            <div class="input-suffix">
-                                <input type="number" id="noShowRate" value="10" min="0" max="100">
-                                <span>%</span>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Active patients</label>
+                                <input type="number" id="activePatients" value="250" min="0">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>No show rate</label>
+                                <div class="input-suffix">
+                                    <input type="number" id="noShowRate" value="10" min="0" max="100">
+                                    <span>%</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="input-group">
-                            <label>Cancellation rate</label>
-                            <div class="input-suffix">
-                                <input type="number" id="cancellationRate" value="20" min="0" max="100">
-                                <span>%</span>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Cancellation rate</label>
+                                <div class="input-suffix">
+                                    <input type="number" id="cancellationRate" value="20" min="0" max="100">
+                                    <span>%</span>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label>Avg revenue/visit</label>
+                                <div class="input-suffix">
+                                    <span>$</span>
+                                    <input type="number" id="avgRevenue" value="90" min="0">
+                                </div>
                             </div>
                         </div>
 
-                        <div class="input-group">
-                            <label>Average revenue per visit</label>
-                            <div class="input-suffix">
-                                <span>$</span>
-                                <input type="number" id="avgRevenue" value="90" min="0">
+                        <div class="input-row">
+                            <div class="input-group full-width">
+                                <label>Monthly salary per front office employee</label>
+                                <div class="input-suffix">
+                                    <span>$</span>
+                                    <input type="number" id="monthlySalary" value="3000" min="0" style="width: 80px;">
+                                </div>
                             </div>
                         </div>
 
-                        <div class="input-group">
-                            <label>Monthly salary per front office employee</label>
-                            <div class="input-suffix">
-                                <span>$</span>
-                                <input type="number" id="monthlySalary" value="3000" min="0">
+                        <div class="input-row">
+                            <div class="input-group full-width">
+                                <label>Number of front office employees</label>
+                                <input type="number" id="numEmployees" value="3" min="0">
                             </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Number of front office employees</label>
-                            <input type="number" id="numEmployees" value="3" min="0">
                         </div>
 
                         <div class="toggle-section">
                             <h3>Novoflow features</h3>
                             
-                            <div class="toggle-item">
-                                <label class="toggle-label">Automated reminders</label>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="automatedReminders" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
+                            <div class="toggle-grid">
+                                <div class="toggle-item">
+                                    <label class="toggle-label">Auto reminders</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="automatedReminders" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
 
-                            <div class="toggle-item">
-                                <label class="toggle-label">Automated waitlist</label>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="automatedWaitlist" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
+                                <div class="toggle-item">
+                                    <label class="toggle-label">Auto waitlist</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="automatedWaitlist" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
 
-                            <div class="toggle-item">
-                                <label class="toggle-label">Automated rescheduling</label>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="automatedRescheduling" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
+                                <div class="toggle-item">
+                                    <label class="toggle-label">Auto reschedule</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="automatedRescheduling" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
 
-                            <div class="toggle-item">
-                                <label class="toggle-label">Automated no-show fee collection</label>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="noShowFeeCollection" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
+                                <div class="toggle-item">
+                                    <label class="toggle-label">No-show fees</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="noShowFeeCollection" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Right Column - Results -->
+                    <!-- Center Column - Results -->
                     <div class="results-section">
-                        <h2 class="section-title">Results Comparison</h2>
+                        <h2 class="section-title">Impact Analysis</h2>
                         
                         <div class="results-table">
                             <div class="table-header">
-                                <div>Impacted metric</div>
-                                <div style="text-align: center;">Without Novoflow</div>
+                                <div>Metric</div>
+                                <div style="text-align: center;">Current</div>
                                 <div style="text-align: center;">With Novoflow</div>
-                            </div>
-
-                            <div class="table-row">
-                                <div class="metric-name">Active patients</div>
-                                <div class="metric-value" id="activePatientsCurrent">250</div>
-                                <div class="metric-value" id="activePatientsWith">250</div>
                             </div>
 
                             <div class="table-row">
                                 <div class="metric-name">Cancellation rate</div>
                                 <div class="metric-value" id="cancellationRateCurrent">20%</div>
-                                <div class="metric-value" id="cancellationRateWith">9%</div>
+                                <div class="metric-value improved" id="cancellationRateWith">9%</div>
                             </div>
 
                             <div class="table-row">
                                 <div class="metric-name metric-indent">
-                                    Automated reminders <span class="expand-arrow">↓</span> <span class="metric-change">-35%</span>
-                                </div>
-                                <div class="metric-value"></div>
-                                <div class="metric-value"></div>
-                            </div>
-
-                            <div class="table-row">
-                                <div class="metric-name metric-indent">
-                                    Automated rescheduling <span class="expand-arrow">↓</span> <span class="metric-change">-20%</span>
+                                    Auto reminders <span class="expand-arrow">↓</span> <span class="metric-change">-35%</span>
                                 </div>
                                 <div class="metric-value"></div>
                                 <div class="metric-value"></div>
@@ -518,116 +658,71 @@
                             <div class="table-row">
                                 <div class="metric-name">No-show rate</div>
                                 <div class="metric-value" id="noShowRateCurrent">10%</div>
-                                <div class="metric-value" id="noShowRateWith">4%</div>
+                                <div class="metric-value improved" id="noShowRateWith">4%</div>
                             </div>
 
                             <div class="table-row">
-                                <div class="metric-name metric-indent">
-                                    Automated reminders <span class="expand-arrow">↓</span> <span class="metric-change">-40%</span>
-                                </div>
-                                <div class="metric-value"></div>
-                                <div class="metric-value"></div>
-                            </div>
-
-                            <div class="table-row">
-                                <div class="metric-name">Cancellation backfill rate</div>
+                                <div class="metric-name">Backfill rate</div>
                                 <div class="metric-value">10%</div>
-                                <div class="metric-value" id="backfillRateWith">15%</div>
+                                <div class="metric-value improved" id="backfillRateWith">15%</div>
                             </div>
 
                             <div class="table-row">
-                                <div class="metric-name metric-indent">
-                                    Automated waitlist <span class="expand-arrow">→</span> <span class="metric-change">50%</span>
-                                </div>
-                                <div class="metric-value"></div>
-                                <div class="metric-value"></div>
-                            </div>
-
-                            <div class="table-row">
-                                <div class="metric-name">No-show fee collection rate</div>
-                                <div class="metric-value">30%</div>
-                                <div class="metric-value" id="noShowFeeRateWith">90%</div>
-                            </div>
-
-                            <div class="table-row">
-                                <div class="metric-name metric-indent">
-                                    Automated no-show fee collection <span class="expand-arrow">→</span> <span class="metric-change">200%</span>
-                                </div>
-                                <div class="metric-value"></div>
-                                <div class="metric-value"></div>
-                            </div>
-
-                            <div class="table-row">
-                                <div class="metric-name">Front office staff</div>
+                                <div class="metric-name">Staff needed</div>
                                 <div class="metric-value" id="staffCurrent">3</div>
-                                <div class="metric-value" id="staffWith">2</div>
+                                <div class="metric-value improved" id="staffWith">2</div>
                             </div>
                         </div>
 
                         <div class="revenue-section">
-                            <div class="subsection-title">Addressable revenue items</div>
+                            <div class="subsection-title">Monthly Revenue Impact</div>
                             
-                            <div class="table-row">
-                                <div class="metric-name">Visits scheduled</div>
-                                <div class="metric-value" id="visitsScheduledCurrent">1000</div>
-                                <div class="metric-value" id="visitsScheduledWith">1540</div>
-                            </div>
-
                             <div class="table-row">
                                 <div class="metric-name">Visits occurred</div>
                                 <div class="metric-value" id="visitsOccurredCurrent">736</div>
-                                <div class="metric-value" id="visitsOccurredWith">1365</div>
+                                <div class="metric-value improved" id="visitsOccurredWith">1365</div>
                             </div>
 
-                            <div class="subsection-title">Addressable revenue</div>
-
                             <div class="table-row">
-                                <div class="metric-name">Visits occurred</div>
+                                <div class="metric-name">Visit revenue</div>
                                 <div class="metric-value" id="revenueVisitsCurrent">$66,240</div>
-                                <div class="metric-value" id="revenueVisitsWith">$122,850</div>
+                                <div class="metric-value improved-revenue" id="revenueVisitsWith">$122,850</div>
                             </div>
 
                             <div class="table-row">
-                                <div class="metric-name">No-show fees collected</div>
+                                <div class="metric-name">No-show fees</div>
                                 <div class="metric-value" id="noShowFeesCurrent">$3,000</div>
-                                <div class="metric-value" id="noShowFeesWith">$5,544</div>
+                                <div class="metric-value improved-revenue" id="noShowFeesWith">$5,544</div>
                             </div>
 
                             <div class="table-row total-row">
-                                <div class="metric-name">Total</div>
+                                <div class="metric-name">Total revenue</div>
                                 <div class="metric-value" id="totalRevenueCurrent">$69,240</div>
-                                <div class="metric-value" id="totalRevenueWith">$128,394</div>
+                                <div class="metric-value improved-revenue" id="totalRevenueWith">$128,394</div>
                             </div>
 
-                            <div class="subsection-title">Addressable costs</div>
+                            <div class="subsection-title">Monthly Cost Savings</div>
 
                             <div class="table-row">
-                                <div class="metric-name">Front office staff expense</div>
+                                <div class="metric-name">Staff expense</div>
                                 <div class="metric-value" id="staffCostCurrent">$9,000</div>
-                                <div class="metric-value" id="staffCostWith">$6,000</div>
+                                <div class="metric-value improved-revenue" id="staffCostWith">$6,000</div>
                             </div>
 
                             <div class="table-row total-row">
-                                <div class="metric-name">Total</div>
-                                <div class="metric-value" id="totalCostCurrent">$9,000</div>
-                                <div class="metric-value" id="totalCostWith">$6,000</div>
-                            </div>
-
-                            <div class="subsection-title">Difference</div>
-
-                            <div class="table-row">
-                                <div class="metric-name">Associated revenue minus costs</div>
+                                <div class="metric-name">Net impact</div>
                                 <div class="metric-value" id="netCurrent">$60,240</div>
-                                <div class="metric-value" id="netWith">$122,394</div>
+                                <div class="metric-value improved-revenue" id="netWith">$122,394</div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="savings-display">
-                <div class="savings-label">Savings per month</div>
-                <div class="savings-amount" id="totalSavings">$62,154</div>
+                    <!-- Right Column - Savings Display -->
+                    <div class="savings-section">
+                        <div class="savings-label">Additional Monthly Revenue</div>
+                        <div class="savings-amount" id="totalSavings">$62,154</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -643,7 +738,7 @@
             
             // Show calculator
             document.getElementById('leadCapture').style.display = 'none';
-            document.getElementById('calculator').style.display = 'block';
+            document.getElementById('calculator').style.display = 'flex';
             
             // Calculate initial results
             calculateROI();
@@ -735,9 +830,6 @@
             const totalSavings = improvedNet - currentNet;
 
             // Update display - metric values
-            document.getElementById('activePatientsCurrent').textContent = Math.round(activePatients);
-            document.getElementById('activePatientsWith').textContent = Math.round(activePatients);
-            
             document.getElementById('cancellationRateCurrent').textContent = Math.round(cancellationRate * 100) + '%';
             document.getElementById('cancellationRateWith').textContent = Math.round(improvedCancellationRate * 100) + '%';
             
@@ -745,15 +837,11 @@
             document.getElementById('noShowRateWith').textContent = Math.round(improvedNoShowRate * 100) + '%';
             
             document.getElementById('backfillRateWith').textContent = Math.round(improvedBackfillRate * 100) + '%';
-            document.getElementById('noShowFeeRateWith').textContent = Math.round(noShowFeeCollectionRate * 100) + '%';
             
             document.getElementById('staffCurrent').textContent = numEmployees;
             document.getElementById('staffWith').textContent = Math.max(1, numEmployees - 1);
 
             // Update revenue items
-            document.getElementById('visitsScheduledCurrent').textContent = Math.round(monthlyVisitsScheduled);
-            document.getElementById('visitsScheduledWith').textContent = Math.round(improvedVisitsScheduled);
-            
             document.getElementById('visitsOccurredCurrent').textContent = Math.round(currentVisitsOccurred);
             document.getElementById('visitsOccurredWith').textContent = Math.round(improvedVisitsOccurred);
             
@@ -768,9 +856,6 @@
             
             document.getElementById('staffCostCurrent').textContent = formatCurrency(currentStaffCost);
             document.getElementById('staffCostWith').textContent = formatCurrency(improvedStaffCost);
-            
-            document.getElementById('totalCostCurrent').textContent = formatCurrency(currentStaffCost);
-            document.getElementById('totalCostWith').textContent = formatCurrency(improvedStaffCost);
             
             document.getElementById('netCurrent').textContent = formatCurrency(currentNet);
             document.getElementById('netWith').textContent = formatCurrency(improvedNet);
