@@ -46,77 +46,251 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+
+        /* Background Design Elements */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(183, 105, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(135, 51, 199, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
         }
 
         /* Lead Capture Form */
         .lead-capture {
-            background: #f8f9fa;
-            border-radius: 16px;
-            padding: 32px 48px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 60px;
             text-align: center;
-            max-width: 600px;
+            width: 100%;
+            max-width: 800px;
             margin: auto;
             border: 1px solid #e8e8e8;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 500px;
+        }
+
+        /* Decorative Elements */
+        .lead-capture::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(183, 105, 255, 0.1) 0%, rgba(135, 51, 199, 0.05) 100%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .lead-capture::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 160px;
+            height: 160px;
+            background: linear-gradient(45deg, rgba(245, 155, 74, 0.08) 0%, rgba(172, 81, 242, 0.05) 100%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .floating-icons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.15;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-icon:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+        .floating-icon:nth-child(2) { top: 20%; right: 15%; animation-delay: 1s; }
+        .floating-icon:nth-child(3) { bottom: 25%; left: 12%; animation-delay: 2s; }
+        .floating-icon:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 3s; }
+        .floating-icon:nth-child(5) { top: 40%; left: 8%; animation-delay: 4s; font-size: 20px; }
+        .floating-icon:nth-child(6) { top: 35%; right: 8%; animation-delay: 5s; font-size: 20px; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
         }
 
         .lead-capture h1 {
             font-family: 'Creato Display Medium', sans-serif;
-            font-size: 42px;
-            margin-bottom: 8px;
+            font-size: 56px;
+            margin-bottom: 16px;
             color: #484848;
             font-weight: 500;
             letter-spacing: -2px;
             line-height: 1.1;
+            position: relative;
+        }
+
+        .lead-capture h1 span {
+            background: linear-gradient(135deg, #8733c7 0%, #b969ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .lead-capture p {
             color: #979797;
-            margin-bottom: 24px;
-            font-size: 16px;
+            margin-bottom: 40px;
+            font-size: 20px;
             font-family: 'Creato Display Regular', sans-serif;
             line-height: 1.4;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 14px;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .trust-badge-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #8733c7 0%, #b969ff 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .form-wrapper {
+            max-width: 400px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+            position: relative;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: all 0.2s;
-            background: white;
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #fafbfc;
             font-family: 'Manrope', sans-serif;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: #8733c7;
-            box-shadow: 0 0 0 3px rgba(135, 51, 199, 0.1);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(135, 51, 199, 0.1);
         }
 
         .submit-btn {
             background: radial-gradient(46.045196134530876% 97.08827980363553% at 3.1% 0%, rgb(174, 104, 227) 0%, rgb(135, 51, 199) 100%);
             color: white;
             border: 1px solid rgb(182, 113, 235);
-            padding: 12px 32px;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-size: 18px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
             width: 100%;
             font-family: 'Creato Display Medium', sans-serif;
             letter-spacing: 0px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .submit-btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(135, 51, 199, 0.25);
+            box-shadow: 0 10px 30px rgba(135, 51, 199, 0.3);
+        }
+
+        .security-note {
+            margin-top: 16px;
+            font-size: 12px;
+            color: #979797;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .security-note::before {
+            content: '🔒';
+            font-size: 14px;
         }
 
         /* Calculator - Compact Design */
@@ -170,7 +344,107 @@
 
         @media (max-width: 1200px) {
             .calculator-content {
-                grid-template-columns: 260px 1fr 240px;
+                grid-template-columns: minmax(240px, 300px) 1fr minmax(240px, 300px);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .calculator-wrapper {
+                display: grid;
+                grid-template-rows: 1fr auto;
+            }
+            
+            .calculator-content {
+                grid-template-columns: minmax(220px, 1fr) 2fr;
+                grid-template-rows: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .calculator-content {
+                grid-template-columns: minmax(200px, 1fr) 1.5fr;
+            }
+            
+            .input-section {
+                padding: 16px;
+            }
+            
+            .results-section {
+                padding: 16px;
+            }
+            
+            .input-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .toggle-grid {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            
+            .section-title {
+                font-size: 16px;
+                margin-bottom: 12px;
+            }
+            
+            .table-header {
+                font-size: 10px;
+            }
+            
+            .table-row {
+                padding: 8px 0;
+            }
+            
+            .metric-name {
+                font-size: 11px;
+            }
+            
+            .metric-value {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .lead-capture {
+                padding: 30px 20px;
+                min-height: auto;
+            }
+            
+            .lead-capture h1 {
+                font-size: 32px;
+            }
+            
+            .lead-capture p {
+                font-size: 16px;
+                margin-bottom: 30px;
+            }
+            
+            .trust-badges {
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 30px;
+            }
+            
+            .container::before,
+            .container::after {
+                display: none;
+            }
+            
+            .calculator-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #f0f0f0;
+                max-height: 40vh;
+                overflow-y: auto;
             }
         }
 
@@ -465,6 +739,78 @@
             pointer-events: none;
         }
 
+        .savings-desktop {
+            display: flex;
+        }
+
+        .savings-mobile {
+            display: none;
+        }
+
+        @media (max-width: 992px) {
+            .savings-desktop {
+                display: none;
+            }
+            
+            .savings-mobile {
+                display: flex;
+                grid-column: 1 / -1;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                border-left: none;
+                border-top: 1px solid #f0f0f0;
+                padding: 16px 20px;
+                gap: 20px;
+            }
+            
+            .savings-mobile > div:first-child {
+                text-align: left;
+            }
+            
+            .savings-mobile .savings-label {
+                margin-bottom: 4px;
+            }
+            
+            .savings-mobile .savings-subtitle {
+                font-size: 12px;
+                color: #979797;
+                font-family: 'Creato Display Regular', sans-serif;
+            }
+            
+            .savings-mobile .savings-amount {
+                margin-bottom: 0;
+                font-size: 36px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .savings-mobile {
+                padding: 12px 16px;
+            }
+            
+            .savings-mobile .savings-amount {
+                font-size: 28px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .savings-mobile {
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+                padding: 12px;
+            }
+            
+            .savings-mobile > div:first-child {
+                text-align: center;
+            }
+            
+            .savings-mobile .savings-amount {
+                font-size: 32px;
+            }
+        }
+
         .savings-label {
             font-size: 14px;
             color: #979797;
@@ -511,36 +857,45 @@
         }
 
         /* Responsive adjustments */
-        @media (max-width: 1024px) {
-            .calculator-content {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr auto;
-            }
-            
-            .input-section {
-                border-right: none;
-                border-bottom: 1px solid #f0f0f0;
-            }
-            
-            .savings-section {
-                border-radius: 0 0 16px 16px;
-                border-left: none;
-                border-top: 1px solid #f0f0f0;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Lead Capture Form -->
         <div class="lead-capture" id="leadCapture">
-            <h1>Calculate Your ROI</h1>
-            <p>See how much revenue your clinic can recover with Novoflow in just 30 seconds</p>
-            <form id="leadForm">
+            <div class="floating-icons">
+                <div class="floating-icon">💰</div>
+                <div class="floating-icon">📊</div>
+                <div class="floating-icon">🏥</div>
+                <div class="floating-icon">💼</div>
+                <div class="floating-icon">✨</div>
+                <div class="floating-icon">🚀</div>
+            </div>
+            
+            <h1>Calculate Your <span>ROI</span></h1>
+            <p>Get a personalized revenue analysis based on real clinic performance data</p>
+            
+            <div class="trust-badges">
+                <div class="trust-badge">
+                    <div class="trust-badge-icon">✓</div>
+                    <span>HIPAA Compliant</span>
+                </div>
+                <div class="trust-badge">
+                    <div class="trust-badge-icon">✓</div>
+                    <span>Based on 10,000+ clinics</span>
+                </div>
+                <div class="trust-badge">
+                    <div class="trust-badge-icon">✓</div>
+                    <span>Instant analysis</span>
+                </div>
+            </div>
+            
+            <form id="leadForm" class="form-wrapper">
                 <div class="form-group">
-                    <input type="email" id="email" placeholder="Enter your email address" required>
+                    <input type="email" id="email" placeholder="Enter your email" required>
                 </div>
                 <button type="submit" class="submit-btn">Calculate Revenue Potential →</button>
+                <div class="security-note">Protected by enterprise-grade security</div>
             </form>
         </div>
 
@@ -730,11 +1085,20 @@
                     </div>
 
                     <!-- Right Column - Savings Display -->
-                    <div class="savings-section">
+                    <div class="savings-section savings-desktop">
                         <div style="font-size: 32px; margin-bottom: 16px; opacity: 0.1;">📈</div>
                         <div class="savings-label">Additional Monthly Revenue</div>
                         <div class="savings-amount" id="totalSavings">$62,154</div>
                     </div>
+                </div>
+                
+                <!-- Bottom Savings Display (Mobile/Tablet) -->
+                <div class="savings-section savings-mobile">
+                    <div>
+                        <div class="savings-label">Additional Monthly Revenue</div>
+                        <div class="savings-subtitle">Revenue increase with Novoflow</div>
+                    </div>
+                    <div class="savings-amount" id="totalSavingsMobile">$62,154</div>
                 </div>
             </div>
         </div>
@@ -874,6 +1238,7 @@
             document.getElementById('netWith').textContent = formatCurrency(improvedNet);
             
             document.getElementById('totalSavings').textContent = formatCurrency(totalSavings);
+            document.getElementById('totalSavingsMobile').textContent = formatCurrency(totalSavings);
         }
 
         function formatCurrency(amount) {
