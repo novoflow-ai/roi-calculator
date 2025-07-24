@@ -137,17 +137,24 @@
 
         .floating-icon {
             position: absolute;
-            font-size: 24px;
-            opacity: 0.15;
+            width: 32px;
+            height: 32px;
+            opacity: 0.08;
             animation: float 6s ease-in-out infinite;
         }
 
+        .floating-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #8733c7;
+        }
+
         .floating-icon:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
-        .floating-icon:nth-child(2) { top: 20%; right: 15%; animation-delay: 1s; }
+        .floating-icon:nth-child(2) { top: 20%; right: 15%; animation-delay: 1s; width: 36px; height: 36px; }
         .floating-icon:nth-child(3) { bottom: 25%; left: 12%; animation-delay: 2s; }
-        .floating-icon:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 3s; }
-        .floating-icon:nth-child(5) { top: 40%; left: 8%; animation-delay: 4s; font-size: 20px; }
-        .floating-icon:nth-child(6) { top: 35%; right: 8%; animation-delay: 5s; font-size: 20px; }
+        .floating-icon:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 3s; width: 28px; height: 28px; }
+        .floating-icon:nth-child(5) { top: 40%; left: 8%; animation-delay: 4s; width: 30px; height: 30px; }
+        .floating-icon:nth-child(6) { top: 35%; right: 8%; animation-delay: 5s; width: 34px; height: 34px; }
 
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
@@ -293,7 +300,6 @@
         }
 
         .security-note::before {
-            content: '🔒';
             font-size: 14px;
         }
 
@@ -882,14 +888,6 @@
     <div class="container">
         <!-- Lead Capture Form -->
         <div class="lead-capture" id="leadCapture">
-            <div class="floating-icons">
-                <div class="floating-icon">💰</div>
-                <div class="floating-icon">📊</div>
-                <div class="floating-icon">🏥</div>
-                <div class="floating-icon">💼</div>
-                <div class="floating-icon">✨</div>
-                <div class="floating-icon">🚀</div>
-            </div>
             
             <h1>Calculate Your <span>ROI</span></h1>
             <p>Get a personalized revenue analysis based on real clinic performance data</p>
