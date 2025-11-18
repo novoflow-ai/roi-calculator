@@ -1,0 +1,302 @@
+================================================================================
+ROI CALCULATOR - COMPLETE FORMULA REFERENCE
+================================================================================
+
+This document contains all formulas used in the ROI Calculator implementation.
+
+================================================================================
+CONSTANTS
+================================================================================
+
+Novoflow Performance Metrics:
+- NF_RECOVER_ABANDON = 0.8          (80% of abandoned calls successfully re-engaged)
+- NF_RECOVER_CANCEL_SD = 0.75       (75% of same-day cancels backfilled)
+- NF_RECOVER_CANCEL_FUT = 0.65      (65% of future-day cancels rebooked)
+- NF_SHOW_LIFT = 0.10               (10% absolute no-show reduction on Novoflow-scheduled slots)
+- NF_HANDLING_SHARE = 0.50          (50% of new bookings handled by Novoflow)
+- NF_AFTER_HOURS_SHARE = 0.3        (30% of Novoflow-handled bookings from after-hours availability)
+
+Novoflow Pricing:
+- NF_FEE_PER_SUCCESS = 50           ($50 per successful outcome)
+- NF_FIXED_MONTHLY = 1000           ($1,000 fixed monthly platform/telephony/etc.)
+- NF_ONE_TIME_SETUP = 300000        ($300,000 one-time setup cost)
+- SETUP_AMORT_MONTHS = 12           (12 months to amortize setup cost)
+
+================================================================================
+INPUT VARIABLES (Baseline Metrics)
+================================================================================
+
+- APPTS_BASE (monthlyAppointments)          = baseline scheduled appointments/month
+- AVG_CHARGE (avgRevenue)                   = average gross charge per appointment ($)
+- COLLECTION_RATE (collectionRate)          = % of charge actually collected (0-1)
+- NO_SHOW_RATE (noShowRate)                 = % of appointments that do not attend (0-1)
+- CANCEL_RATE (cancellationRate)            = % of appointments cancelled before visit (0-1)
+- SAME_DAY_SHARE (sameDayShare)             = share of cancellations that are same/near-day (0-1)
+- ABANDON_RATE (callAbandonmentRate)        = % inbound calls that are abandoned (0-1)
+- INBOUND_CALLS (inboundCalls)              = inbound calls/month related to scheduling
+- CONV_CALL_TO_APPT (convCallToAppt)        = baseline % of answered calls that become booked appointments (0-1)
+- CAP_MONTHLY_APPTS (capacity)              = provider capacity for attended appointments/month (hard cap)
+
+================================================================================
+INPUT VARIABLES (Staff Metrics)
+================================================================================
+
+- TIME_MIN_PER_TASK (timeMinPerTask)        = avg human minutes per manual task (booking/reschedule/refill)
+- STAFF_FTE (staffCount)                    = front-desk FTE count
+- STAFF_FULLY_LOADED (staffCost)            = annual fully-loaded cost per FTE ($)
+- WORK_HRS_PER_FTE (workHrsPerFTE)          = monthly work hours per FTE (e.g., 160)
+
+================================================================================
+INTERMEDIATE CALCULATIONS
+================================================================================
+
+1. APPTS_RECOVER_ABANDON (Recover Abandoned Calls)
+   Formula: APPTS_RECOVER_ABANDON = INBOUND_CALLS * ABANDON_RATE * NF_RECOVER_ABANDON * CONV_CALL_TO_APPT
+   
+   Explanation: Calculates appointments recovered from calls that were initially abandoned. Novoflow 
+   re-engages a percentage of abandoned calls, and a portion of those re-engaged calls convert to 
+   booked appointments.
+   
+   Example: 1300 * 0.25 * 0.8 * 0.7 = 182 appointments
+
+2. After-Hours Bookings
+   Formula: afterHoursBookings = APPTS_BASE * NF_HANDLING_SHARE * NF_AFTER_HOURS_SHARE
+   
+   Explanation: Estimates additional bookings captured due to Novoflow's 24/7 availability. A 
+   percentage of Novoflow-handled bookings come from after-hours when traditional staff isn't available.
+   
+   Example: 1000 * 0.5 * 0.3 = 150 appointments
+
+3. Additional Bookings
+   Formula: additionalBookings = APPTS_RECOVER_ABANDON + afterHoursBookings
+   
+   Explanation: Total new appointments from call recovery and after-hours availability. Represents 
+   incremental bookings that wouldn't have occurred without Novoflow.
+   
+   Example: 182 + 150 = 332 appointments
+
+4. APPTS_RECOVER_CANCEL_SD (Recover Same-Day Cancels)
+   Formula: APPTS_RECOVER_CANCEL_SD = APPTS_BASE * CANCEL_RATE * SAME_DAY_SHARE * NF_RECOVER_CANCEL_SD
+   
+   Explanation: Calculates appointments recovered from same-day cancellations. Novoflow can backfill 
+   these slots more effectively than manual processes, preventing revenue loss from last-minute cancels.
+   
+   Example: 1000 * 0.20 * 0.70 * 0.75 = 105 appointments
+
+5. APPTS_RECOVER_CANCEL_FUT (Recover Future-Day Cancels)
+   Formula: APPTS_RECOVER_CANCEL_FUT = APPTS_BASE * CANCEL_RATE * (1 - SAME_DAY_SHARE) * NF_RECOVER_CANCEL_FUT
+   
+   Explanation: Calculates appointments recovered from future-day cancellations. These are rebooked 
+   into other available slots, maintaining schedule utilization and revenue.
+   
+   Example: 1000 * 0.20 * (1 - 0.70) * 0.65 = 39 appointments
+
+6. Recovered Appointments (with guardrail)
+   Formula: recoveredAppointments = min(APPTS_RECOVER_CANCEL_SD + APPTS_RECOVER_CANCEL_FUT, 
+                                        APPTS_BASE * CANCEL_RATE)
+   
+   Explanation: Total recovered appointments from cancellations, capped by actual cancellations 
+   available. Prevents double-counting by ensuring we can't recover more than actually cancelled.
+   
+   Guardrail: No_double_counting_cancellations
+   Example: min(105 + 39, 1000 * 0.20) = min(144, 200) = 144 appointments
+
+7. Total New Appointments
+   Formula: totalNewAppointments = additionalBookings + recoveredAppointments
+   
+   Explanation: Sum of all new appointments from Novoflow - both new bookings (abandoned calls + 
+   after-hours) and recovered cancellations. Used to calculate variable fees.
+   
+   Example: 332 + 144 = 476 appointments
+
+8. Monthly Staff Cost
+   Formula: monthlyStaffCost = STAFF_FULLY_LOADED / 12
+   
+   Explanation: Converts annual fully-loaded staff cost to monthly for hourly rate calculations. 
+   Fully-loaded includes salary, benefits, taxes, and overhead.
+   
+   Example: 60000 / 12 = $5,000
+
+================================================================================
+MAIN OUTPUT CALCULATIONS (in order)
+================================================================================
+
+1. ATTEND_INCREMENTAL
+   Formula: ATTEND_INCREMENTAL = min(CAP_MONTHLY_APPTS - APPTS_ATTENDED_BASE,
+                                      APPTS_RECOVER_ABANDON + APPTS_RECOVER_CANCEL_SD + 
+                                      APPTS_RECOVER_CANCEL_FUT + APPTS_RECOVER_SHOWS)
+   
+   Explanation: Calculates incremental attended appointments after accounting for no-show rates and 
+   capacity constraints. Takes the minimum of available capacity and total recovered attended 
+   appointments. This is the actual incremental value Novoflow delivers.
+   
+   Where:
+   - APPTS_ATTENDED_BASE = APPTS_BASE * (1 - NO_SHOW_RATE)
+   - APPTS_RECOVER_ABANDON = APPTS_RECOVER_ABANDON * (1 - NO_SHOW_RATE)
+   - APPTS_RECOVER_CANCEL_SD = APPTS_RECOVER_CANCEL_SD * (1 - NO_SHOW_RATE)
+   - APPTS_RECOVER_CANCEL_FUT = APPTS_RECOVER_CANCEL_FUT * (1 - NO_SHOW_RATE)
+   - APPTS_RECOVER_SHOWS = APPTS_NF_SCHEDULED * NF_SHOW_LIFT
+     where APPTS_NF_SCHEDULED = APPTS_BASE * NF_HANDLING_SHARE
+   
+   Example:
+   - APPTS_ATTENDED_BASE = 1000 * (1 - 0.25) = 750
+   - APPTS_RECOVER_ABANDON = 182 * 0.75 = 136.5
+   - APPTS_RECOVER_CANCEL_SD = 105 * 0.75 = 78.75
+   - APPTS_RECOVER_CANCEL_FUT = 39 * 0.75 = 29.25
+   - APPTS_NF_SCHEDULED = 1000 * 0.50 = 500
+   - APPTS_RECOVER_SHOWS = 500 * 0.10 = 50
+   - totalRecoveredAttended = 136.5 + 78.75 + 29.25 + 50 = 294.5
+   - capacityAvailable = 1200 - 750 = 450
+   - ATTEND_INCREMENTAL = min(450, 294.5) = 294.5
+
+2. REVENUE_UPLIFT_COLLECTIONS
+   Formula: REVENUE_UPLIFT = ATTEND_INCREMENTAL * AVG_CHARGE * COLLECTION_RATE
+   
+   Explanation: Calculates net revenue from incremental attended appointments. Uses collection rate 
+   (not gross charges) to reflect actual cash collected, accounting for insurance adjustments and 
+   write-offs. This is the real revenue impact.
+   
+   Example: 294.5 * 200 * 0.90 = $53,010
+
+3. STAFF_SAVINGS
+   Formula breakdown:
+   
+   Step 1: TASKS_AUTOMATED = additionalBookings + recoveredAppointments + baselineAppointmentsHandled
+          where baselineAppointmentsHandled = APPTS_BASE * NF_HANDLING_SHARE
+          Explanation: Counts all tasks Novoflow automates - new bookings, recoveries, and baseline 
+          appointments it handles.
+   
+   Step 2: HOURS_SAVED = TASKS_AUTOMATED * TIME_MIN_PER_TASK / 60
+          Explanation: Converts automated tasks to hours saved by multiplying tasks by average time 
+          per task (in minutes) and converting to hours.
+   
+   Step 3: HOURLY_RATE = (STAFF_FULLY_LOADED / 12) / WORK_HRS_PER_FTE
+          Explanation: Calculates the hourly cost of staff by dividing monthly cost by monthly work 
+          hours per FTE.
+   
+   Step 4: STAFF_SAVINGS = HOURS_SAVED * HOURLY_RATE * STAFF_FTE
+          Explanation: Total cost savings from staff time freed up, scaled by number of staff 
+          members. Represents the value of staff capacity that can be redirected to other tasks.
+   
+   Example:
+   - baselineAppointmentsHandled = 1000 * 0.50 = 500
+   - TASKS_AUTOMATED = 332 + 144 + 500 = 976
+   - HOURS_SAVED = 976 * 5 / 60 = 81.33 hours
+   - HOURLY_RATE = (60000 / 12) / 160 = 5000 / 160 = $31.25
+   - STAFF_SAVINGS = 81.33 * 31.25 * 2 = $5,083
+
+4. TOTAL_BENEFIT
+   Formula: TOTAL_BENEFIT = REVENUE_UPLIFT + STAFF_SAVINGS
+   
+   Explanation: Sum of all benefits from Novoflow - both incremental revenue and staff cost savings. 
+   This represents the total value created by the solution.
+   
+   Example: 53,010 + 5,083 = $58,093
+
+5. NOVOFLOW_VARIABLE_FEES
+   Formula: VARIABLE_FEES = totalNewAppointments * NF_FEE_PER_SUCCESS
+   
+   Explanation: Variable cost component based on successful outcomes (bookings, backfills, rebooks). 
+   Scales with volume - more appointments mean higher variable fees.
+   
+   Example: 476 * 50 = $23,800
+
+6. NOVOFLOW_FIXED_FEES
+   Formula: FIXED_FEES = NF_FIXED_MONTHLY + (NF_ONE_TIME_SETUP / SETUP_AMORT_MONTHS)
+   
+   Explanation: Fixed monthly costs including platform fees, telephony, and amortized one-time setup 
+   cost. Setup cost is spread over the amortization period (typically 12 months).
+   
+   Example: 1000 + (300000 / 12) = 1000 + 25000 = $26,000
+
+7. TOTAL_COST
+   Formula: TOTAL_COST = VARIABLE_FEES + FIXED_FEES
+   
+   Explanation: Total monthly cost of Novoflow solution, combining both variable (per-success) and 
+   fixed (platform + amortized setup) fees.
+   
+   Example: 23,800 + 26,000 = $49,800
+
+8. NET_IMPACT
+   Formula: NET_IMPACT = TOTAL_BENEFIT - TOTAL_COST
+   
+   Explanation: Net financial impact after subtracting all Novoflow costs from total benefits. 
+   Positive values indicate net positive ROI, negative values indicate net cost.
+   
+   Example: 58,093 - 49,800 = $8,293
+
+9. ROI
+   Formula: ROI = (NET_IMPACT / TOTAL_COST) * 100
+   
+   Explanation: Return on Investment expressed as a percentage. Shows how much net benefit is 
+   generated per dollar of cost. Higher ROI indicates better value proposition.
+   
+   Example: (8,293 / 49,800) * 100 = 16.6%
+
+10. PAYBACK_MONTHS
+    Formula: PAYBACK_MONTHS = NF_ONE_TIME_SETUP / NET_IMPACT
+    (only calculated if NET_IMPACT > 0)
+    
+    Explanation: Time required to recover the one-time setup cost through net monthly benefits. 
+    Lower payback period indicates faster return on initial investment. Only calculated when 
+    net impact is positive.
+    
+    Example: 300000 / 8,293 = 36.2 months
+
+11. CAPACITY_USED_%
+    Formula: CAPACITY_USED_% = ((APPTS_ATTENDED_BASE + ATTEND_INCREMENTAL) / CAP_MONTHLY_APPTS) * 100
+    
+    Explanation: Percentage of total provider capacity being utilized. Shows how effectively the 
+    practice is using available appointment slots. Values over 100% indicate capacity constraints 
+    (though the guardrail prevents exceeding capacity in calculations).
+    
+    Example: ((750 + 294.5) / 1200) * 100 = 87.0%
+
+================================================================================
+GUARDRAILS
+================================================================================
+
+1. No_double_counting_cancellations
+   Implementation: recoveredAppointments = min(recoveredSameDay + recoveredFuture, 
+                                               monthlyCancellations)
+   Ensures recovered appointments never exceed actual cancellations available.
+
+2. Collections_not_charges
+   Implementation: All revenue calculations multiply by COLLECTION_RATE
+   - bookingRevenue = bookingRevenueGross * collectionRate
+   - recoveryRevenue = recoveryRevenueGross * collectionRate
+   - REVENUE_UPLIFT = ATTEND_INCREMENTAL * avgRevenue * collectionRate
+   Ensures all financial calculations use net collections, not gross charges.
+
+3. Capacity_respected
+   Implementation: 
+   - ATTEND_INCREMENTAL = min(capacityAvailable, totalRecoveredAttended)
+   - capacityAvailable = max(0, CAP_MONTHLY_APPTS - APPTS_ATTENDED_BASE)
+   Ensures total attended appointments never exceed capacity.
+
+================================================================================
+DISPLAY CALCULATIONS (for UI purposes)
+================================================================================
+
+These calculations are used for display but REVENUE_UPLIFT is the official value:
+
+- bookingRevenueGross = additionalBookings * AVG_CHARGE
+- bookingRevenue = bookingRevenueGross * COLLECTION_RATE
+- recoveryRevenueGross = recoveredAppointments * AVG_CHARGE
+- recoveryRevenue = recoveryRevenueGross * COLLECTION_RATE
+
+Capacity adjustment factor (for display when capacity is limiting):
+- capacityAdjustmentFactor = capacityAvailable / totalRecoveredAttended
+  (only applied if capacityAvailable < totalRecoveredAttended)
+
+- bookingRevenueAdjusted = bookingRevenue * capacityAdjustmentFactor
+- recoveryRevenueAdjusted = recoveryRevenue * capacityAdjustmentFactor
+
+Overall Recovery Rate (for display):
+- overallRecoveryRate = recoveredAppointments / monthlyCancellations
+  (where monthlyCancellations = APPTS_BASE * CANCEL_RATE)
+
+================================================================================
+END OF FORMULA REFERENCE
+================================================================================
+
