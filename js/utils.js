@@ -59,6 +59,6 @@ export function formatCurrency(amount) {
     
     // Cap extremely large values for display
     const cappedAmount = Math.min(Math.max(amount, -Number.MAX_SAFE_INTEGER), Number.MAX_SAFE_INTEGER);
-    return '$' + Math.round(cappedAmount).toLocaleString();
+    return '$' + Math.abs(Math.round(cappedAmount)).toLocaleString();
 }
 

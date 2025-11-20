@@ -82,7 +82,9 @@ export function updateUI(results) {
     document.getElementById('novoflowVariableFees').textContent = '-' + formatCurrency(VARIABLE_FEES);
     document.getElementById('novoflowFixedFees').textContent = '-' + formatCurrency(FIXED_FEES);
     document.getElementById('totalCost').textContent = '-' + formatCurrency(TOTAL_COST);
-    document.getElementById('netImpact').textContent = '+' + formatCurrency(NET_IMPACT);
+    document.getElementById('netImpact').textContent = (NET_IMPACT >= 0 ? '+' : '-') + formatCurrency(NET_IMPACT);
+    document.getElementById('netImpact').classList.toggle('positive', NET_IMPACT >= 0);
+    document.getElementById('netImpact').classList.toggle('negative', NET_IMPACT < 0);
     document.getElementById('paybackMonths').textContent = PAYBACK_MONTHS ? PAYBACK_MONTHS.toFixed(1) + ' months' : 'N/A';
     document.getElementById('capacityUsedPercent').textContent = Math.round(CAPACITY_USED_PERCENT) + '%';
     

@@ -49,3 +49,22 @@ export const ADVANCED_PARAMS = {
 // Google Sheets integration URL
 export const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz41oHJrBXqkeHR5RenC8XZR3DpyAEXHzdhND5jqkiFcm6bfRbFoyY2loxToBiqDdL3og/exec';
 
+// Fields that default to non-zero values in calculations.js when 0 is inputted
+// These fields will revert to their HTML default value when set to 0
+export const FIELDS_WITH_CALCULATIONS_DEFAULTS = new Set([
+    'collectionRate',      // defaults to 0.90 (90%) in calculations.js
+    'workHrsPerFTE',      // defaults to 160 in calculations.js
+    'timeMinPerTask',     // defaults to 5 in calculations.js
+    'sameDayShare',       // defaults to 0.70 (70%) in calculations.js
+    'convCallToAppt'      // defaults to 0.70 (70%) in calculations.js
+]);
+
+// HTML default values for fields that should revert when set to 0 (from HTML value attributes)
+export const HTML_DEFAULTS_FOR_REVERT = {
+    'collectionRate': 90,
+    'workHrsPerFTE': 160,
+    'timeMinPerTask': 5,
+    'sameDayShare': 70,
+    'convCallToAppt': 70
+};
+
